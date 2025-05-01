@@ -22,3 +22,36 @@ $ docker-compose up -d
 ```
 
 The environment takes about 1 minute to get up (depending on your Docker host) for the first time since Wazuh Indexer must be started for the first time and the indexes and index patterns must be generated.
+
+## Configuration for syslog
+
+### 1. Change configuraation Wazuh Manager
+
+```
+$ vim /var/ossec/etc/ossec.conf
+```
+```
+  <remote>
+    <connection>syslog</connection>
+    <port>514</port>
+    <protocol>tcp</protocol>
+    <allowed-ips>0.0.0.0/0</allowed-ips><!-->Mandatory</-->
+    <local_ip>192.168.18.30</local_ip>
+  </remote>
+```
+
+### 2. Enable module archives in Filebeat configuration
+
+```
+$ vim /etc/filebeat/filebeat.yml
+```
+
+```
+filebeat.modules:
+  - module: wazuh
+    alerts:
+      enabled: true
+    archives:
+      enabled: true
+```
+
